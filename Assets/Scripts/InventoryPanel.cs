@@ -5,11 +5,9 @@ using UnityEngine.UI;
 public class InventoryPanel : MonoBehaviour
 {
     public Sprite emptySlot;
-    public GameObject slotPrefab;
-    private List<Image> slots = new List<Image>();
-    private List<Image> uiItems = new List<Image>();
+    public List<Image> slots = new List<Image>();
     [SerializeField] public List<GameObject> possibleItems = new List<GameObject>();
-    private List<BaseItem> items = new List<BaseItem>();
+    public List<GameObject> items = new List<GameObject>(); // Changed to GameObject
     private System.Random random = new System.Random();
 
     private void Start()
@@ -20,10 +18,10 @@ public class InventoryPanel : MonoBehaviour
             AddSlot();
             items.Add(null);
         }
-        
+
         NormalizeChances();
     }
-    
+
     public void Reroll()
     {
         Debug.Log("Rerolling inventory...");
@@ -34,14 +32,14 @@ public class InventoryPanel : MonoBehaviour
             {
                 items[i] = null;
             }
-            
+
             // Roll the dice for the new item and set the UI representation
             Debug.Log("Rolling dice for slot " + i);
             GameObject item = RollDice(i);
             Debug.Log("Rolled item: " + item);
             if (item != null)
             {
-                items[i] = item.GetComponent<BaseItem>();
+                items[i] = item;
                 AddItemToSlot(i, item.GetComponent<BaseItem>().UIImage);
             }
         }
@@ -49,23 +47,29 @@ public class InventoryPanel : MonoBehaviour
 
     private void AddSlot()
     {
-        GameObject newSlot = Instantiate(slotPrefab, transform);
-        slots.Add(newSlot.GetComponent<Image>());
-        // Make the slot's child invisible
-        newSlot.transform.GetChild(0).GetComponent<Image>().enabled = false;
-    }
-    
-    public void AddItem(BaseItem item, int slot)
-    {
-        if (slot < 0 || slot >= items.Count)
-        {
-            Debug.LogError("Invalid slot number");
-            return;
-        }
-
-        items[slot] = item;
-        slots[slot].sprite = item.GetComponent<SpriteRenderer>().sprite;
-        NormalizeChances();
+        // Create new game object from scratch (not using the prefab) with the following structure
+        // and put it into Market panel as a child:
+        // EmptySlot (<Image>) -(child)-> UIRepresentation (<Image>)
+        GameObject newSlot = new GameObject("EmptySlot");
+        newSlot.transform.SetParent(transform);
+        
+        GameObject uiRepresentation = new GameObject("UIRepresentation");
+        uiRepresentation.transform.SetParent(newSlot.transform);
+        
+        // Add drag and drop functionality to the UI representation
+        uiRepresentation.AddComponent<CanvasGroup>();
+        uiRepresentation.AddComponent<DragDrop>();
+        
+        Image slotImage = newSlot.AddComponent<Image>();
+        slots.Add(slotImage);
+        
+        Image uiImage = uiRepresentation.AddComponent<Image>();
+        slotImage.sprite = emptySlot;
+        
+        uiImage.enabled = false;
+        
+        // Resize the UI representation to match the size of the empty slot
+        slotImage.rectTransform.sizeDelta = new Vector2(emptySlot.rect.width, emptySlot.rect.height);
     }
     
     public void AddItemToSlot(int slot, Sprite itemSprite)
@@ -75,16 +79,14 @@ public class InventoryPanel : MonoBehaviour
             Debug.LogError("Invalid slot number");
             return;
         }
-        
+
         Image slotImage = slots[slot].transform.GetChild(0).GetComponent<Image>();
         // Set sprite size according to the units in the sprite
         slotImage.rectTransform.sizeDelta = new Vector2(itemSprite.rect.width, itemSprite.rect.height);
+
         slotImage.sprite = itemSprite;
         slotImage.enabled = true;
-        Debug.Log("Enabled status: " + slotImage.enabled);
-        Debug.Log("Added item to slot " + slot);
     }
-
 
     private void NormalizeChances()
     {
@@ -118,7 +120,7 @@ public class InventoryPanel : MonoBehaviour
         }
 
         float roll = (float)random.NextDouble();
-        
+
         float currentChance = 0;
         foreach (var item in possibleItems)
         {
@@ -131,7 +133,7 @@ public class InventoryPanel : MonoBehaviour
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -144,6 +146,7 @@ public class InventoryPanel : MonoBehaviour
         }
 
         items[slot] = null;
-        slots[slot].sprite = emptySlot;
+        slots[slot].transform.GetChild(0).GetComponent<Image>().sprite = null;
+        slots[slot].transform.GetChild(0).GetComponent<Image>().enabled = false;
     }
 }
