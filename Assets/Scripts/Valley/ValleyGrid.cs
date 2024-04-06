@@ -10,7 +10,6 @@ public class ValleyGrid : BaseGrid
     void Start()
     {
         CreateGrid();
-        PrintOccupied();
     }
     
     public void CreateGrid()
@@ -22,31 +21,16 @@ public class ValleyGrid : BaseGrid
             for (int y = 0; y < height; y++)
             {
                 GameObject newCellInstance = Instantiate(cellPrefab, new Vector3(x, y, cellPrefab.transform.position.z), Quaternion.identity);
-                ValleyCell newCell = new ValleyCell();
-                
+                ValleyCell newCell = newCellInstance.AddComponent<ValleyCell>();
+
                 newCell.isOccupied = false;
                 newCell.Occupant = null;
-                
+
                 ValleyCells[x, y] = newCell;
             }
         }
     }
     
-    public void PrintOccupied()
-    {
-        string output = "";
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                output += ValleyCells[x, y].isOccupied;
-            }
-            output += "\n";
-        }
-        Debug.Log(output);
-    }
-    
-
     public void PlaceItem(GameObject item_gameobject, Vector2Int position)
     {
         ValleyItem item = item_gameobject.GetComponent<ValleyItem>();
@@ -110,7 +94,6 @@ public class ValleyGrid : BaseGrid
             Debug.Log("Cell position: " + cellPosition);
             GameObject newObject = Instantiate(cowPrefab, new Vector3(cellPosition.x, cellPosition.y, cowPrefab.transform.position.z), Quaternion.identity);
             PlaceItem(newObject, cellPosition);
-            PrintOccupied();
         }
     }
 }

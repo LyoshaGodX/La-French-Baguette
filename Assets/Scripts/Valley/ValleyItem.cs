@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class ValleyItem : BaseItem
+public class ValleyItem : BaseItem
 {
-    // Placeholder
+    // Add any additional fields or methods specific to ValleyItem here
 }

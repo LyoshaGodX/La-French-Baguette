@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7104387912021830949}
   - component: {fileID: 1007694492314634859}
-  - component: {fileID: 2025150729385008056}
+  - component: {fileID: -3529580685551221321}
   m_Layer: 0
   m_Name: River
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2025150729385008056
+--- !u!114 &-3529580685551221321
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,3 +97,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bb3996f55784d6cb4e53bb52f70284f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UIImage: {fileID: 21300000, guid: 2a84e746f75bba16cb3efab539cbf862, type: 3}

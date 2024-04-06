@@ -97,3 +97,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d55e4499e224543a17f5bb894d75f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UIImage: {fileID: 21300000, guid: 369da3012ac6935af98184ac2c854722, type: 3}
