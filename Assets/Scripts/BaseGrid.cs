@@ -4,15 +4,7 @@ using UnityEngine;
 
 public class BaseGrid : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Grid dimensions
+    public int width = 10;
+    public int height = 10;
 }
